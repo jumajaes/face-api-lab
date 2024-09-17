@@ -41,7 +41,8 @@ function App() {
       const detections = await faceapi.detectAllFaces(videoRef.current,
         new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions().withFaceDescriptors().withAgeAndGender();
 
-      if (detections.length > 0 & detections[0].expressions.happy > 0.9) {
+      // if (detections.length > 0 & detections[0].expressions.happy > 0.9) {
+        if (detections.length > 0 ) {
         videoDescriptor = detections[0].descriptor;
         console.log(detections[0].descriptor, "dentro")
 
@@ -65,27 +66,27 @@ function App() {
       faceapi.draw.drawDetections(canvasRef.current, resized);
       faceapi.draw.drawFaceLandmarks(canvasRef.current, resized);
       faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
-      //compareImages()
+      compareImages()
     }, 500);
   };
 
-  // const compareImages = async () => {
-  //   if (!videoDescriptor) {
-  //     document.getElementById('result').innerText = 'No se ha detectado ningún rostro en el video.';
-  //     return;
-  //   }
+  const compareImages = async () => {
+    if (!videoDescriptor) {
+      document.getElementById('result').innerText = 'No se ha detectado ningún rostro en el video.';
+      return;
+    }
 
-  //   const img = await faceapi.bufferToImage(imageUploadRef.current.files[0]);
-  //   const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+    const img = await faceapi.bufferToImage(imageUploadRef.current.files[0]);
+    const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
 
-  //   if (!detection) {
-  //     document.getElementById('result').innerText = 'No se detectó ningún rostro en la imagen cargada.';
-  //     return;
-  //   }
+    if (!detection) {
+      document.getElementById('result').innerText = 'No se detectó ningún rostro en la imagen cargada.';
+      return;
+    }
 
-  //   const distance = faceapi.euclideanDistance(videoDescriptor, detection.descriptor);
-  //   document.getElementById('result').innerText =`Eres la misma persona: ${distance < 0.4}`;
-  // };
+    const distance = faceapi.euclideanDistance(videoDescriptor, detection.descriptor);
+    document.getElementById('result').innerText =`Eres la misma persona: ${distance < 0.4}`;
+  };
 
   return (
     <div className="myapp">
@@ -95,8 +96,8 @@ function App() {
         <canvas ref={canvasRef} width="940" height="650" className="appcanvas"/>
       </div>
      
-      {/* <input type="file" ref={imageUploadRef} accept="image/*" onChange={compareImages} /> */}
-      {/* <div id="result"></div> */}
+      <input type="file" ref={imageUploadRef} accept="image/*" onChange={compareImages} /> 
+      <div id="result"></div>
     </div>
   );
 }
